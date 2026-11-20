@@ -1,0 +1,18 @@
+{
+  "site": {
+    "title": "AI 小工具集",
+    "subtitle": "把日常的小麻烦，做成打开就能用的页面",
+    "repoLabel": "q3yi/ai-generated",
+    "repoUrl": "https://gitee.com/q3yi/ai-generated"
+  },
+  "tools": [
+    {
+      "dir": "cat-insulin-app",
+      "name": "猫咪胰岛素计算器",
+      "emoji": "🐱",
+      "description": "稀释胰岛素后，按猫咪体重精确换算每次需要抽取的毫升数，支持记录注射历史。",
+      "tags": ["健康", "计算器", "手机友好"],
+      "hue": 158
+    }
+  ]
+}

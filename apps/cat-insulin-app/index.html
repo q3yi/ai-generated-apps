@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#40916c">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22%E7%8C%AB%E5%92%AA%E8%83%B0%E5%B2%9B%E7%B4%A0%E8%AE%A1%E7%AE%97%E5%99%A8%22%2C%20%22short_name%22%3A%20%22%E8%83%B0%E5%B2%9B%E7%B4%A0%E8%AE%A1%E7%AE%97%22%2C%20%22start_url%22%3A%20%22.%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%23a8e6cf%22%2C%20%22theme_color%22%3A%20%22%2340916c%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAFlklEQVR4nO3c3XFTSRRF4fYU8RCDJwPywDgX4yIPMnAOJGQeQIUwkqWr2z9n772%2BR2aKud2nV1957PLd/dPDawNC/bf6AYCVCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCADRCOCCl8fn1Y9wM%2BVnn4UA3uFwgBzWMBIBnHF8cBQPkfrzz0IAiEYAJzjemI5r6oEA3jh3UJQOkMMaZiGAIwkHJGGNWxDAb0kHI2mtlxDABgoHR%2BEZKyGAlnloEtd8SnwAyQchee0H0QHccgAqHxq39cwQHQAQG8Cem6/irem2nlkiA0ge%2BDmpexIXQOqgr5G4N1EB9BxwpcPiuq4ZogIA3ooJIO1m2yNpryICGDXQCgfFeW0z2AeQMsgREvbOOoCEAY7mvofWAcyw8oC4H84ZPqx%2BgFGqHI69z/H/1y%2BdnuR2L4/PJZ5jBMsAVh3%2BEf/dU3/nisPoGsHd/dPD6%2BqH6KnKze/KLQKrrwE4/OO57bFVAMBWNgG43UyVOe21RQBOA1HhsufyAbgMQpHD3ssHAOwhHYDDDaROfQayAahvvBPlWUgGoLzhrlRnIheA6kYnUJyNXABAT1IBKN4wadRmJBOA2sYmU5qV/E%2BDKm22I/WfDpUP4BSiGEP9sJ8i8xHoWhz%2BcRz31ioAxwFV47bHNgG4DaYyp722CMBpICpc9lw%2BAJdBKHLYe/kAgD2kA3C4gdSpz0A2APWNd6I8C8kAlDfclepMJAMAepELQPWmSaA4G6kAFDc4jdqMpAIAepMJQO1mSaY0K5kAgBEkAlC6UfCLyszKB6CykfiXwuzKBwCMRACIVjoAhVco3ld9hqUDAEYrG0D1mwPXqzzLsgEAMxAAopX8xVgrXpkfP386%2Bec/vn2f%2Bhy9VVpXxV%2BsxRugnT8kl/5Zda7r6unD6gdY6dpDcPj3VN4GrusaodwboPL/McA%2BFWdbLoBZbvkIoPCxwXVdo0QGsGfglQ%2BL67pGigwAOCgVQMXPiOir2oxLBQDMRgCIRgCIFhnAnm/8VP6mkeu6RioTwOwvjm4ZuMIhUVhXpS%2BEywQArBD9s0CHm%2B/SN4EUbv5jrusagTdAe/8gKB8S13X1FP0GOOZ6IFzX1QtvAEQjAEQjAEQjAEQjAEQjAEQjAEQjAEQjAEQjAETjRyEm2fpbF/gRhjnKvAEq/t7InrYcaPfDX2nWZQIAViCAia652d1v/2oIYDIOeC0EUAhxzFcqgEpfHI2UfNCrzbhUAEneRpAcxUoEgGgEsNDh1uf2X6dcANU%2BI46WdPgrzrZcAMBMBIBoJQOo%2BKrEPlVnWjIAYBYCQLSyAVR9ZWK7yrMsGwAwQ%2BkAKt8cuE71GZYOABiNABCtfADVX6E4T2F25QNoTWMj8TeVmUkEAIwiE4DKjQKtWckEAIwgFYDSzZJKbUZSAbSmt8FJFGcjFwDQk2QAijeNO9WZSAbQmu6GO1KehWwArWlvvAv1GUgHAOwlH4D6DaTMYe/lA2jNYxBqXPbcIoDWfAaiwGmvbQJozWswVbntsVUArfkNqBLHvbULoDXPQa3muqeWAbTmO7AVnPfSNoDWvAc3i/se3t0/PbyufogZXh6fVz%2BCFPeDf2D9BjiWMtAekvYqJoDWsgZ7q7Q9ivkI9BYfif6WdvAPot4Ax1IHfkryXsS%2BAY6lvg2SD/4BARxJCYGD/0fsR6BTEg5Gwhq34A3wDpc3Aof%2BPAK4gmoIHPzLCGCj6jFw6LchgB2qxMChvx0BdDQrCA58PwQw2N4oOOxjEQCi8X0ARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARCMARPsJh9%2B6zqECgX0AAAAASUVORK5CYII%3D%22%2C%20%22sizes%22%3A%20%22192x192%22%2C%20%22type%22%3A%20%22image/png%22%7D%2C%20%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAQUUlEQVR4nO3c3XUbVxKFUWiW4nEMUgbOw5JzkbychzNwDk5I8yBLJiWAxE9336o6e7/OLLtJ9D39AeDMm3efPnw5AQBR/rf6AgCA4wkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAOB0Ov39%2Bx%2BrL4GDeK3hKwFAPA%2BEPF5zEACEe/og8FCYz%2BsN/xEAABBIABDLO0DcAyQTAES6NPweCHN5zeE5AUAcg8%2BP3BMkEgBEMfRc4t4gjQCAH3gQzOM1hZ8JAGJ4CPAa9whJBAARDDvXcq%2BQQgAw3j2D7iEwh9cfzhMAjGbIuZd7h%2BkEAAAEEgCM9eg7OO8A%2B3MPwGUCgJEMN1txLzGVAGAcg83W3FNMJAAYZeuhNvx9uRfgZQIAAAIJAMbwDo29uceYRAAwwp7DbPT7cT/A6wQA7RlkjuaeYwIBQGuGmFXce3QnAOAKxr4PrxVcRwDQlqFnNfcgnQkAWjK8VOFepCsBQDurBtfQ1%2BfegOsJAFoxtFTl3qQbAUAbBpbq3KN0IgDgBga%2BLq8N3EYA0IJxpwv3Kl0IAMozqHTjnqUDAUBpFYe04jWlq/iaVLwmeEoAUJYBpTv3MJUJAAAIJAAoqfo7p%2BrXl6T6a1H9%2BsglACjHYDKNe5qKBAClGEqmcm9TjQCgjG4D2e16J%2Br2GnS7XmYTAAAQSABQgndGpHCvU4UAYLnOg9j52rvr/LvvfO3MIQBYyhCSyr3PagKAZQwg6ZwBVhIA8CAjfjy/c3icAGAJAw5fOQusIgA4nMGD55wJVhAAHGrq0E39uSqa%2Brue%2BnNRlwDgMAYOXuaMcCQBAACBBACHSHhnk/AzrpbwO074GalBALA7gwa3cWY4ggBgV4YM7uPssDcBwG4SByzxZz5K4u828WfmOAIAAAIJAHbhnQtsw1liLwKAzaUPVvrPv4f032n6z88%2BBACbMlSwD2eLrQkANmOgYF/OGFsSALADQ70dv0vYhwBgE0YajuGssZW3qy%2BA/gxSDUe9Du8/fzzk38Nlf//%2Bh9eBh7159%2BnDl9UXQV8e/i/baqS7/Z5Tf%2B6jiQAe4RMA7mactzfld3rp5/DA2pZPAniEAIAFpjzobyUMoA5fAXCX1AfYPd5//uj3dSO/s9sIKO4hALiZYYZ6RAC38j8D5CYe/lCTs8mtBABXMzBQmzPKLQQAAAQSAFzFOwvowVnlWgKAVxkU6MWZ5RoCgBcZEujJ2eU1AoCLDAj05gzzEgEAAIEEAGd55wAzOMtcIgD4icGAWZxpzhEAPGMoYCZnmx8JAL4zEDCbM85TAoDT6WQYIIWzzjcCAAACCQC8I4AwzjynkwCIZwggk7OPAAhmACCbDcgmAEI5%2BMDpZAuSCQAACCQAAil%2B4CmbkEkAhHHQgXNsQx4BEMQBB15iI7IIgBAONnANW5FDAABAIAEQQNEDt7AZGQTAcA4ycA/bMZ8AGMwBBh5hQ2YTAEM5uMAWbMlcAgAAAgmAgRQ7sCWbMpMAGMZBBfZgW%2BYRAIM4oMCebMwsAmAIBxM4gq2ZQwAAQCABMIAiB45kc2YQAM05iMAKtqe/N%2B8%2Bffiy%2BiLYnsMJbOX954%2BrL4EdCIAwwgC4xIM%2BiwDgdDoJA0jiQc/pJAB4gSiA/jzsuUQAcDNhAPV40HMr/ysAAAgkALiJd/9Qk7PJrQQAVzMwUJszyi0EAFcxLNCDs8q1BACvMijQizPLNQQALzIk0JOzy2sEABcZEOjNGeYlAoCzDAfM4CxziQDgJwYDZnGmOUcA8IyhgJmcbX4kAAAgkADgO%2B8QYDZnnKcEAKfTyTBACmedbwQABgHCOPOcTgIgniGATM4%2BAiCYAYBsNiCbAACAQAIglPIHTidbkEwABHLggadsQiYBEMZBB86xDXkEAAAEEgBBFD7wEhuRRQCEcLCBa9iKHAIAAAIJgACKHriFzcggAIZzkIF72I75BMBgDjDwCBsymwAAgEACYCjlDmzBlswlAAAgkAAYSLEDW7IpMwmAYRxUYA%2B2ZR4BAACBBMAgCh3Yk42ZRQAM4WACR7A1cwgAAAgkAAZQ5MCRbM4MAgAAAgmA5pQ4sILt6U8AAEAgAdCYAgdWskG9CQAACCQAmlLeQAW2qC8BAACBBEBDihuoxCb1JAAAIJAAaEZpAxXZpn4EAAAEEgCNKGygMhvViwAAgEACoAllDXRgq/oQAAAQSAA0oKiBTmxWDwIAAAIJAAAIJACK81Ea0JHtqk8AAEAgAVCYggY6s2G1CQAACCQAACCQACjKR2fABLasLgEAAIEEQEGKGZjEptUkAAAgkAAAgEACoBgflQET2bZ63q6%2BANjSL7/9%2BuJ//s%2Bffx1yHfTk/iGJAKC11wb7tf%2B%2BQc/m/iHZm3efPnxZfRF85SOy69063K8x5FncP%2Bu8//xx9SXwL38DQDtbj/de/0xqcv/AV74CoI29R/bbP9%2B7uZncP/CcTwBo4ch3WN7NzeP%2BgZ8JgCJ8/3/ZikE14nO4f2qxdXUIAEpbOaRGvD/3D1wmACirwoBWuAbuU%2BG1q3ANcIkAKMBHYkASm1eDAKCkSu%2BcKl0L16n0mlW6FnhKAFBOxcGseE2cV/G1qnhNIAAAIJAAWMx3Yc9VfqdU%2Bdr4qvJrVPnaVrB96wkAAAgkAAAgkAAAgEACgDI6fEfa4RpTdXhtOlwjOQTAQv4IBkhmA9cSAAAQSAAAQCABAACBBAAABBIAi/jjFwBbuJIAAIBAAoAy/vnzr9WX8KoO15iqw2vT4RrJIQAAIJAAAIBAAgAAAgmABfzV62WVvyOtfG18Vfk1qnxtq9nENQQAAAQSAJRT8Z1SxWvivIqvVcVrAgFASZUGs9K1cJ1Kr1mla4GnBAAABBIAlFXhnVOFa%2BA%2BFV67CtcAlwgASls5oMa7P/cPXCYAKG/FkBrvOdw/cJ4AoIUjB9V4z%2BP%2BgZ%2B9XX0BcK1vw/rLb7/u%2Bs9nJvcPPOcTgIP5f7x63B5Da7xzuH9qso3H8wkALW31bs5wZ3L/gACguR8H%2BLVBN9g85f4hmQBgFAPNI9w/JPE3AAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAHOz954%2BrLwGgHNt4PAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAR6u/oCgPv98tuvS//9//z519J/P3A/nwBAYysfwB7%2B0JsAAIBAAmAB/49XbGnFO3Hv/tmSTVxDAABAIAEAAxz5jty7f5hBAMAQHszALQQAcDWRAXMIABhkzwe0hz/MIgAW8Vev7MWDmk5s4ToCAHiVqIB5BAAM5IENvEYAAC8SEzCTAIChtnhwe/jDXAJgIX/8wt48wKnMBq4lAICzxAPMJgBgOA9y4BwBAPxENMB8AgACeKADPxIAi/kjGI5ybQSIBY5g%2B9YTAMB3Hv6QQwBAEA944BsBAGEuRYA4gCwCoADfhQFJbF4NAgAC/fhu37t/yCMAACCQACjCR2Ic7du7fu/%2BOZKtq0MAQDAPf8glAAAgkAAAgEACoBDfjQGT2bhaBAAABBIAABBIABTjIzJgIttWjwAAgEACAAACCYCCfFQGTGLTahIAABBIABSlmIEJbFldAgAAAgkAAAgkAArz0RnQmQ2rTQAAQCABUJyCBjqyXfUJAAAIJAAAIJAAaMBHaUAnNqsHAQAAgQRAE4oa6MBW9SEAACCQAGhEWQOV2aheBAAABBIAzShsoCLb1I8AAIBAAqAhpQ1UYpN6EgAAEEgANKW4gQpsUV8CAAACCYDGlDewkg3qTQAAQCAB0JwCB1awPf0JAAAIJAAGUOLAkWzODAIAAAIJgCEUOXAEWzOHABjEwQT2ZGNmEQAAEEgADKPQgT3YlnkEwEAOKrAlmzKTAACAQAJgKMUObMGWzCUAACCQABhMuQOPsCGzCYDhHGDgHrZjPgEQwEEGbmEzMggAAAgkAEIoeuAatiKHAAjiYAMvsRFZBAAABBIAYRQ%2BcI5tyCMAAjnowFM2IZMACOXAA6eTLUgmAAAgkAAIpvwhmw3IJgDCGQDI5OwjADAEEMaZ53QSAPzLIEAGZ51vBADfGQaYzRnnKQEAAIEEAM94hwAzOdv8SADwE0MBszjTnCMAOMtgwAzOMpcIAC4yHNCbM8xLBAAvMiDQk7PLawQArzIk0IszyzUEAFcxKNCDs8q1BABXMyxQmzPKLQQANzEwUJOzya0EADczNFCLM8k9BAB3MThQg7PIvQQAdzM8sJYzyCMEAA8xQLCGs8ejBAAPM0RwLGeOLQgANmGQ4BjOGlsRAGzGMMG%2BnDG29Obdpw9fVl8E8/z9%2Bx%2BrLwHG8OBnDz4BYBcGC7bhLLEXAcBuDBc8xhliTwKAXRkwuI%2Bzw94EALszZHAbZ4Yj%2BCNADuWPA%2BEyD36O5BMADmXg4Dxng6MJAA5n6OA5Z4IVfAXAUr4SIJkHPyv5BIClDCCp3PusJgBYzhCSxj1PBb4CoBRfCTCZBz%2BV%2BASAUgwkU7m3qcYnAJTl0wAm8OCnKp8AUJbhpDv3MJX5BIAWfBpAJx78dCAAaEUIUJkHP534CoBWDCxVuTfpxicAtOXTACrw4KcrAUB7QoAVPPjpTgAwhhDgCB78TCEAGEcIsAcPfqYRAIwlBNiCBz9TCQDGEwLcw4Of6QQAMYQA1/DgJ4UAII4Q4BwPftIIAGIJAU4nD35yCQDiCYFMHvykEwDwhBiYzUMf/iMA4AwhMIsHP/xMAMArxEBPHvrwMgEANxADtXnow/UEANxJDNTgoQ/3EQCwATFwLA99eJwAgB0Igm154MP2BAAcQBDcxgMf9icAYAFB8JwHPhxPAEAh08PAgx7qEADQQLcw8KCH%2BgQADHFUJHi4wwwCAAAC/W/1BQAAxxMAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQ6P/eBohHt0XHfwAAAABJRU5ErkJggg%3D%3D%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%7D%5D%7D">
+
+<title>猫咪胰岛素计算器</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2340916c'/><text y='68' x='50' text-anchor='middle' font-size='55'>🐱</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(160deg, #a8e6cf 0%, #dcedc1 100%);
+    min-height: 100vh;
+    padding: max(15px, env(safe-area-inset-top)) 15px 30px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+    padding: 22px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; text-align: center; color: #2d6a4f; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #888; font-size: 12px; margin-bottom: 18px; }
+  .section-title {
+    font-size: 14px; font-weight: bold; color: #2d6a4f;
+    background: #eafaf1; padding: 8px 12px; border-radius: 8px;
+    margin: 16px 0 10px;
+  }
+  .row { display: flex; align-items: center; margin-bottom: 10px; gap: 8px; }
+  label { font-size: 14px; color: #444; width: 118px; flex-shrink: 0; }
+  .input-wrap {
+    display: flex; align-items: center; flex: 1;
+    background: #f5f7f6; border-radius: 10px;
+    padding: 11px 12px; border: 1px solid #e0e5e2;
+  }
+  .input-wrap:focus-within { border-color: #52b788; background: #fff; }
+  input { border: none; outline: none; background: transparent; font-size: 17px; width: 100%; color: #333; }
+  .unit { font-size: 13px; color: #999; margin-left: 6px; white-space: nowrap; }
+  .result-box {
+    margin-top: 18px; background: linear-gradient(135deg, #52b788, #40916c);
+    border-radius: 14px; padding: 18px; text-align: center; color: #fff;
+  }
+  .result-box .big { font-size: 42px; font-weight: bold; margin: 4px 0; }
+  .detail {
+    font-size: 13px; opacity: 0.95; line-height: 1.8; margin-top: 10px;
+    text-align: left; background: rgba(255,255,255,0.15);
+    border-radius: 10px; padding: 10px 14px;
+  }
+  .warning {
+    margin-top: 14px; font-size: 12px; color: #b5651d; background: #fff3e0;
+    border-radius: 10px; padding: 10px 14px; line-height: 1.6;
+  }
+  .error { color: #d64545; font-size: 13px; margin-top: 10px; text-align: center; display: none; }
+  /* 历史记录 */
+  .history { margin-top: 16px; }
+  .history-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #f5f7f6; border-radius: 10px; padding: 10px 14px;
+    margin-bottom: 8px; font-size: 13px; color: #444;
+  }
+  .history-item b { color: #2d6a4f; font-size: 15px; }
+  .del-btn { color: #d64545; font-size: 18px; padding: 4px 8px; }
+  .clear-btn {
+    width: 100%; margin-top: 6px; padding: 10px;
+    border: none; border-radius: 10px; background: #eee;
+    color: #888; font-size: 13px;
+  }
+  /* 大按钮保存 */
+  .save-btn {
+    width: 100%; margin-top: 14px; padding: 14px;
+    border: none; border-radius: 12px;
+    background: #2d6a4f; color: #fff; font-size: 16px; font-weight: bold;
+  }
+  .save-btn:active { opacity: 0.85; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🐱 猫咪胰岛素剂量计算器</h1>
+  <div class="subtitle">稀释胰岛素 · 按体重精确计算注射量</div>
+
+  <div class="section-title">第一步：稀释后胰岛素浓度</div>
+  <div class="row">
+    <label>稀释前总单位数</label>
+    <div class="input-wrap">
+      <input type="number" id="totalUnits" value="300" step="any" inputmode="decimal">
+      <span class="unit">单位</span>
+    </div>
+  </div>
+  <div class="row">
+    <label>稀释前总体积</label>
+    <div class="input-wrap">
+      <input type="number" id="totalMl" value="3" step="any" inputmode="decimal">
+      <span class="unit">ml</span>
+    </div>
+  </div>
+  <div class="row">
+    <label>每次抽取体积</label>
+    <div class="input-wrap">
+      <input type="number" id="drawMl" value="0.1" step="any" inputmode="decimal">
+      <span class="unit">ml</span>
+    </div>
+  </div>
+  <div class="row">
+    <label>稀释至体积</label>
+    <div class="input-wrap">
+      <input type="number" id="diluteMl" value="1" step="any" inputmode="decimal">
+      <span class="unit">ml</span>
+    </div>
+  </div>
+
+  <div class="section-title">第二步：猫咪信息</div>
+  <div class="row">
+    <label>猫咪体重</label>
+    <div class="input-wrap">
+      <input type="number" id="weight" value="4.45" step="any" inputmode="decimal">
+      <span class="unit">kg</span>
+    </div>
+  </div>
+  <div class="row">
+    <label>每kg剂量</label>
+    <div class="input-wrap">
+      <input type="number" id="dosePerKg" value="0.3" step="any" inputmode="decimal">
+      <span class="unit">单位/kg</span>
+    </div>
+  </div>
+
+  <div class="error" id="error">⚠️ 请输入有效的正数</div>
+
+  <div class="result-box">
+    <div>应注射的稀释胰岛素量</div>
+    <div class="big"><span id="result">--</span> ml</div>
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <button class="save-btn" onclick="saveRecord()">💾 记录本次注射</button>
+
+  <div class="section-title">📋 注射历史</div>
+  <div id="history"></div>
+  <button class="clear-btn" onclick="clearHistory()">清空历史记录</button>
+
+  <div class="warning">
+    ⚠️ <b>重要提示</b>：本工具仅供辅助参考，实际注射剂量请务必遵医嘱，并以血糖监测结果为准。注射前请再次核对计算结果。
+  </div>
+</div>
+
+<script>
+// ============ 计算 ============
+function calc() {
+  const totalUnits = parseFloat(document.getElementById('totalUnits').value);
+  const totalMl    = parseFloat(document.getElementById('totalMl').value);
+  const drawMl     = parseFloat(document.getElementById('drawMl').value);
+  const diluteMl   = parseFloat(document.getElementById('diluteMl').value);
+  const weight     = parseFloat(document.getElementById('weight').value);
+  const dosePerKg  = parseFloat(document.getElementById('dosePerKg').value);
+
+  const errorEl = document.getElementById('error');
+  const resultEl = document.getElementById('result');
+  const detailEl = document.getElementById('detail');
+
+  const inputs = [totalUnits, totalMl, drawMl, diluteMl, weight, dosePerKg];
+  if (inputs.some(v => isNaN(v) || v <= 0)) {
+    errorEl.style.display = 'block';
+    resultEl.textContent = '--';
+    detailEl.textContent = '';
+    return null;
+  }
+  errorEl.style.display = 'none';
+
+  const originConc = totalUnits / totalMl;
+  const dilutedConc = (originConc * drawMl) / diluteMl;
+  const needUnits = weight * dosePerKg;
+  const injectMl = needUnits / dilutedConc;
+
+  resultEl.textContent = injectMl.toFixed(3);
+  detailEl.innerHTML =
+    `原液浓度：${totalUnits}÷${totalMl} = <b>${originConc.toFixed(2)}</b> 单位/ml<br>` +
+    `稀释后浓度：<b>${dilutedConc.toFixed(2)}</b> 单位/ml<br>` +
+    `所需剂量：${weight}kg × ${dosePerKg} = <b>${needUnits.toFixed(2)}</b> 单位<br>` +
+    `注射体积：<b>${injectMl.toFixed(3)}</b> ml`;
+
+  // 保存参数供记录用
+  return { weight, dosePerKg, needUnits, injectMl, dilutedConc };
+}
+
+document.querySelectorAll('input').forEach(el => {
+  el.addEventListener('input', () => {
+    calc();
+    saveInputs();
+  });
+});
+
+// ============ 本地保存参数（下次打开自动恢复）============
+function saveInputs() {
+  const data = {};
+  document.querySelectorAll('input').forEach(el => data[el.id] = el.value);
+  localStorage.setItem('catInsulinInputs', JSON.stringify(data));
+}
+function loadInputs() {
+  const saved = localStorage.getItem('catInsulinInputs');
+  if (saved) {
+    const data = JSON.parse(saved);
+    for (const id in data) {
+      const el = document.getElementById(id);
+      if (el) el.value = data[id];
+    }
+  }
+}
+
+// ============ 注射历史 ============
+function saveRecord() {
+  const r = calc();
+  if (!r) return;
+  const list = JSON.parse(localStorage.getItem('catInsulinHistory') || '[]');
+  list.unshift({
+    time: new Date().toLocaleString('zh-CN', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }),
+    ml: r.injectMl.toFixed(3),
+    units: r.needUnits.toFixed(2),
+    weight: r.weight
+  });
+  localStorage.setItem('catInsulinHistory', JSON.stringify(list.slice(0, 50)));
+  renderHistory();
+}
+function renderHistory() {
+  const list = JSON.parse(localStorage.getItem('catInsulinHistory') || '[]');
+  const box = document.getElementById('history');
+  if (list.length === 0) {
+    box.innerHTML = '<div style="text-align:center;color:#bbb;font-size:13px;padding:10px;">暂无记录</div>';
+    return;
+  }
+  box.innerHTML = list.map((item, i) =>
+    `<div class="history-item">
+      <div>${item.time} · ${item.weight}kg<br>需 ${item.units} 单位</div>
+      <div><b>${item.ml} ml</b></div>
+      <div class="del-btn" onclick="delRecord(${i})">✕</div>
+    </div>`
+  ).join('');
+}
+function delRecord(i) {
+  const list = JSON.parse(localStorage.getItem('catInsulinHistory') || '[]');
+  list.splice(i, 1);
+  localStorage.setItem('catInsulinHistory', JSON.stringify(list));
+  renderHistory();
+}
+function clearHistory() {
+  if (confirm('确定清空所有注射记录吗？')) {
+    localStorage.removeItem('catInsulinHistory');
+    renderHistory();
+  }
+}
+
+loadInputs();
+calc();
+renderHistory();
+</script>
+</body>
+</html>

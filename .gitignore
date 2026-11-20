@@ -1,0 +1,13 @@
+# 构建产物（部署平台会自己构建，无需入库）
+/dist/
+
+# 依赖
+node_modules/
+
+# 编辑器 / 系统垃圾文件
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.log
