@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AI 小工具集">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#52b788"/>
+      <stop offset="1" stop-color="#2f855a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M196 176v-20c0-20 16-36 36-36h48c20 0 36 16 36 36v20"
+        fill="none" stroke="#ffffff" stroke-width="24" stroke-linecap="round"/>
+  <rect x="112" y="176" width="288" height="184" rx="30" fill="#ffffff"/>
+  <rect x="112" y="248" width="288" height="18" fill="#d8f3e4"/>
+  <rect x="236" y="236" width="40" height="42" rx="10" fill="#2f855a"/>
+</svg>

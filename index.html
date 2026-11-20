@@ -9,6 +9,8 @@
 <meta name="theme-color" content="#f4f8f6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101815" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🛠️</text></svg>">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="manifest" href="manifest.json">
 <style>
   :root {
     color-scheme: light dark;
@@ -140,11 +142,19 @@
     border-radius: 999px; padding: 3px 9px; white-space: nowrap;
   }
   .go {
-    margin-top: 12px; font-size: 13px; font-weight: 600;
+    font-size: 13px; font-weight: 600;
     color: hsl(var(--hue) 50% 34%);
   }
   @media (prefers-color-scheme: dark) {
     .go { color: hsl(var(--hue) 55% 74%); }
+  }
+  .meta {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-top: 12px;
+  }
+  .date {
+    font-size: 11.5px; color: var(--muted); white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
   .card:hover .go span { display: inline-block; transform: translate(2px, -1px); }
   .empty {
@@ -187,13 +197,16 @@
         <h2>猫咪胰岛素计算器</h2>
         <p class="desc">稀释胰岛素后，按猫咪体重精确换算每次需要抽取的毫升数，支持记录注射历史。</p>
         <div class="tags"><span class="tag">健康</span><span class="tag">计算器</span><span class="tag">手机友好</span></div>
-        <span class="go">打开工具 <span aria-hidden="true">↗</span></span>
+        <div class="meta">
+          <span class="go">打开工具 <span aria-hidden="true">↗</span></span>
+          <span class="date">更新于 2026-11-20</span>
+        </div>
       </a>
     <p class="empty" id="empty" hidden>没有找到匹配的工具，换个关键词试试。</p>
   </main>
 
   <footer>
-    <span>收录 1 个工具 · 构建于 2026-11-20</span>
+    <span>收录 1 个工具 · 最近更新 2026-11-20 · 构建于 2026-11-20</span>
     <span>源码：<a href="https://github.com/q3yi/ai-generated-apps" target="_blank" rel="noopener">q3yi/ai-generated-apps</a></span>
   </footer>
 </div>
@@ -232,6 +245,13 @@
         input.blur();
       }
     });
+
+    // 离线：注册 Service Worker（file:// 下浏览器不允许，所以跳过）
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
+      });
+    }
   })();
 </script>
 </body>

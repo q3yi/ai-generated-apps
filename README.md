@@ -4,7 +4,8 @@
 
 - 无需后端、无第三方依赖，双击 `index.html` 也能打开
 - 目录页由 `tools.json` + `apps/` 自动生成，新增工具只要两步
-- 自带搜索、深色模式、手机适配
+- 自带搜索、深色模式、手机适配，卡片显示每个工具的更新时间
+- 访问过一次就能**离线使用**（Service Worker + PWA，可添加到主屏幕）
 - 代码放 GitHub（Gitee 可作国内镜像），Cloudflare（Pages / Workers）自动构建发布
 
 ## 目录结构
@@ -12,12 +13,15 @@
 ```
 ai-generated-tools/
 ├─ index.html            # 工具目录页（由 npm run build 生成，不要手改）
-├─ tools.json            # 工具清单：名称、图标、简介、标签
+├─ sw.js                 # Service Worker（构建生成，负责离线缓存）
+├─ manifest.json         # PWA 清单，支持「添加到主屏幕」
+├─ icon.svg              # 图标
+├─ tools.json            # 工具清单：名称、图标、简介、标签、更新时间
 ├─ apps/                 # 每个小工具一个目录，入口固定为 index.html
 │  └─ cat-insulin-app/
 │     └─ index.html
 ├─ scripts/
-│  ├─ build.mjs          # 生成目录页 + 导出 dist/
+│  ├─ build.mjs          # 生成目录页和 sw.js，导出 dist/
 │  └─ serve.mjs          # 零依赖本地预览服务器
 ├─ .nvmrc                # Node 20，给 Cloudflare Pages 构建环境用
 ├─ package.json
@@ -35,6 +39,8 @@ npm run preview   # 打开 http://localhost:5173/
 
 `dist/` 是可直接上传的静态站点产物（已 gitignore），包含目录页和所有工具。
 
+> `http://localhost` 下也会注册 Service Worker，方便测试离线；如果改完页面发现本地还是旧的，DevTools → Application → Storage → Clear site data 清一下即可。
+
 ## 新增一个小工具
 
 1. 新建 `apps/我的工具/index.html`，单文件即可（样式、脚本都写在里面，引用资源用相对路径）。
@@ -46,7 +52,8 @@ npm run preview   # 打开 http://localhost:5173/
   "name": "工具名称",
   "emoji": "🧮",
   "description": "一句话说清楚它能干什么。",
-  "tags": ["分类", "场景"]
+  "tags": ["分类", "场景"],
+  "updatedAt": "2026-11-20"
 }
 ```
 
@@ -54,6 +61,28 @@ npm run preview   # 打开 http://localhost:5173/
 4. `git add -A && git commit -m "feat: 新增 xxx" && git push`，线上会自动重建（用 Cloudflare Pages 的 Git 集成时）。
 
 > 忘记改 `tools.json` 也没关系：`apps/` 下任何含 `index.html` 的目录都会被自动收录，只是标题取自页面的 `<title>`，图标默认 🧩。
+
+## 更新时间
+
+卡片右下角显示「更新于 YYYY-MM-DD」，页脚显示「最近更新」。日期来源按优先级：
+
+1. `tools.json` 里的 `updatedAt`（最稳，推荐手写）
+2. git 里这个文件最后一次提交的日期（完整仓库时可用）
+3. 本地文件修改时间（CI 里等于克隆时间，会自动跳过）
+
+Cloudflare Pages 构建时通常是浅克隆，git 历史只剩一条提交，日期会全部变成"部署日"，所以代码在这种情况下不猜日期——**没写 `updatedAt` 的卡片就不显示日期**，而不是显示一个错的。
+
+## 离线使用
+
+打开过一次之后，目录页和所有工具都会被 Service Worker 缓存到本地，断网、飞行模式、地铁里都还能用：
+
+- 目录页的搜索、卡片跳转照常
+- 工具本身是纯前端，数据在 `localStorage`，离线不影响计算
+- 手机浏览器菜单里可以「添加到主屏幕」，独立窗口和图标来自 `manifest.json` + `icon.svg`
+
+实现上：`npm run build` 生成 `sw.js`，把 `index.html`、`manifest.json`、`icon.svg` 以及 `apps/` 下所有文件列进预缓存清单，并用**内容哈希**做缓存版本号——内容一变版本号就变，旧缓存自动清掉。所以更新节奏是：联网打开一次 → 新版在后台装好 → 下次打开就是新的。
+
+首次必须联网打开一次，之后才有缓存可用（`file://` 双击打开时浏览器不允许 Service Worker，会自动跳过）。
 
 ## 部署到公网
 
@@ -141,6 +170,8 @@ ssh -T git@github.com    # 看到 Hi q3yi! 说明公钥已配置
 
 - **点开工具 404**：确认链接指向 `apps/<目录>/index.html`，且目录名大小写与磁盘一致（GitHub 和 Linux 构建环境都区分大小写）。
 - **改了工具页面但线上没变**：先 `npm run build`；接了 Git 集成的话推送后等自动构建，手动上传的再执行一次 `npm run deploy`。
+- **断网打开还是旧版本**：Service Worker 的更新要联网打开一次才生效，属正常现象。
+- **离线没生效**：确认用 `https://` 或 `http://localhost` 访问（`file://` 下浏览器不允许 Service Worker）。
 - **Cloudflare 构建失败**：确认构建命令是 `node scripts/build.mjs`、输出目录是 `dist`，Node 版本 ≥ 18。
 - **工具里的数据会丢吗**：不会上传，但存在浏览器 `localStorage`，换浏览器、清缓存或换域名都会重置。
 - **能不能放密钥/API Key**：不能。这是纯前端页面，任何写进 HTML/JS 的内容都能被访问者看到。

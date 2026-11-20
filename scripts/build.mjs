@@ -9,12 +9,15 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const APPS_DIR = path.join(ROOT, 'apps');
 const MANIFEST_FILE = path.join(ROOT, 'tools.json');
 const OUTPUT_HTML = path.join(ROOT, 'index.html');
+const OUTPUT_SW = path.join(ROOT, 'sw.js');
 const DIST_DIR = path.join(ROOT, 'dist');
 
 const warnings = [];
@@ -49,6 +52,49 @@ const hueOf = (text) => {
 
 /** 目录名安全地转成 URL 中的一段路径。 */
 const urlSegment = (name) => name.split('/').map(encodeURIComponent).join('/');
+
+/* -------------------------------------------------------------- 更新时间解析 */
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const today = () => new Date().toISOString().slice(0, 10);
+
+/** CI 里的浅克隆只有一条提交，git 日期会退化成“部署日”，必须先判断。 */
+const isShallowRepo = (() => {
+  try {
+    return execFileSync('git', ['rev-parse', '--is-shallow-repository'], {
+      cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim() === 'true';
+  } catch {
+    return true;
+  }
+})();
+
+function gitDateOf(relPath) {
+  if (isShallowRepo) return null;
+  try {
+    const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', relPath], {
+      cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return DATE_RE.test(out) ? out : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 更新时间的来源，按可信度排序：
+ * tools.json 里手写的 updatedAt → git 最后一次改动这个文件的日期 → 本地文件修改时间。
+ * CI 环境里文件修改时间等于克隆时间，没有参考价值，所以跳过。
+ */
+function resolveUpdatedAt(app, declaredDate, source) {
+  if (DATE_RE.test(String(declaredDate ?? ''))) return { date: String(declaredDate), source: 'tools.json' };
+  const fromGit = gitDateOf(path.relative(ROOT, app.htmlFile).split(path.sep).join('/'));
+  if (fromGit) return { date: fromGit, source: 'git' };
+  if (!process.env.CI) {
+    return { date: fs.statSync(app.htmlFile).mtime.toISOString().slice(0, 10), source: 'mtime' };
+  }
+  return { date: null, source };
+}
 
 /* ------------------------------------------------------------------ 读取数据 */
 
@@ -129,6 +175,7 @@ for (const item of declared) {
     continue;
   }
   const pageMeta = readPageMeta(app.htmlFile);
+  const updated = resolveUpdatedAt(app, item.updatedAt, 'none');
   seen.add(dir);
   tools.push({
     dir,
@@ -138,6 +185,8 @@ for (const item of declared) {
     tags: normalizeTags(item.tags),
     url: `apps/${urlSegment(dir)}/index.html`,
     hue: Number.isFinite(item.hue) ? Number(item.hue) : hueOf(dir),
+    updatedAt: updated.date,
+    updatedFrom: updated.source,
   });
 }
 
@@ -145,6 +194,7 @@ for (const item of declared) {
 for (const app of discovered) {
   if (seen.has(app.dir)) continue;
   const pageMeta = readPageMeta(app.htmlFile);
+  const updated = resolveUpdatedAt(app, undefined, 'none');
   warn(`apps/${app.dir}/ 没有在 tools.json 中登记，已按目录自动收录`);
   tools.push({
     dir: app.dir,
@@ -154,6 +204,8 @@ for (const app of discovered) {
     tags: [],
     url: `apps/${urlSegment(app.dir)}/index.html`,
     hue: hueOf(app.dir),
+    updatedAt: updated.date,
+    updatedFrom: updated.source,
   });
 }
 
@@ -166,12 +218,16 @@ const renderCard = (tool) => {
   const tags = tool.tags.length
     ? `<div class="tags">${tool.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}</div>`
     : '';
+  const date = tool.updatedAt ? `<span class="date">更新于 ${tool.updatedAt}</span>` : '';
   return `      <a class="card" href="${escapeHtml(tool.url)}" style="--hue:${tool.hue}" data-search="${escapeHtml(searchText)}">
         <span class="icon" aria-hidden="true">${escapeHtml(tool.emoji)}</span>
         <h2>${escapeHtml(tool.name)}</h2>
         <p class="desc">${escapeHtml(tool.description)}</p>
         ${tags}
-        <span class="go">打开工具 <span aria-hidden="true">↗</span></span>
+        <div class="meta">
+          <span class="go">打开工具 <span aria-hidden="true">↗</span></span>
+          ${date}
+        </div>
       </a>`;
 };
 
@@ -180,6 +236,7 @@ const repoLink = site.repoUrl
   : '';
 
 const buildDate = new Date().toISOString().slice(0, 10);
+const latestDate = tools.map((tool) => tool.updatedAt).filter(Boolean).sort().pop() || '';
 
 const html = `<!DOCTYPE html>
 <!-- 本文件由 scripts/build.mjs 自动生成；请修改 tools.json 或 apps/ 后运行 npm run build -->
@@ -192,6 +249,8 @@ const html = `<!DOCTYPE html>
 <meta name="theme-color" content="#f4f8f6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101815" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🛠️</text></svg>">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="manifest" href="manifest.json">
 <style>
   :root {
     color-scheme: light dark;
@@ -323,11 +382,19 @@ const html = `<!DOCTYPE html>
     border-radius: 999px; padding: 3px 9px; white-space: nowrap;
   }
   .go {
-    margin-top: 12px; font-size: 13px; font-weight: 600;
+    font-size: 13px; font-weight: 600;
     color: hsl(var(--hue) 50% 34%);
   }
   @media (prefers-color-scheme: dark) {
     .go { color: hsl(var(--hue) 55% 74%); }
+  }
+  .meta {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-top: 12px;
+  }
+  .date {
+    font-size: 11.5px; color: var(--muted); white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
   .card:hover .go span { display: inline-block; transform: translate(2px, -1px); }
   .empty {
@@ -370,7 +437,7 @@ ${tools.map(renderCard).join('\n')}
   </main>
 
   <footer>
-    <span>收录 ${tools.length} 个工具 · 构建于 ${buildDate}</span>
+    <span>收录 ${tools.length} 个工具${latestDate ? ` · 最近更新 ${latestDate}` : ''} · 构建于 ${buildDate}</span>
     <span>${repoLink ? `源码：${repoLink}` : '纯静态页面 · 无后端依赖'}</span>
   </footer>
 </div>
@@ -409,24 +476,136 @@ ${tools.map(renderCard).join('\n')}
         input.blur();
       }
     });
+
+    // 离线：注册 Service Worker（file:// 下浏览器不允许，所以跳过）
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
+      });
+    }
   })();
 </script>
 </body>
 </html>
 `;
 
+/* ------------------------------------------------------------------ 离线缓存 */
+
+/** 递归列出目录下的文件（相对 ROOT 的斜杠路径），跳过隐藏文件和超大文件。 */
+function listFilesUnder(dir, maxBytes) {
+  const files = [];
+  const walk = (current) => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      if (entry.name.startsWith('.')) continue;
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+        continue;
+      }
+      if (maxBytes && fs.statSync(full).size > maxBytes) {
+        warn(`${path.relative(ROOT, full)} 超过 ${Math.round(maxBytes / 1024 / 1024)}MB，未加入离线缓存`);
+        continue;
+      }
+      files.push(path.relative(ROOT, full).split(path.sep).join('/'));
+    }
+  };
+  walk(dir);
+  return files;
+}
+
+const staticAssets = ['manifest.json', 'icon.svg'].filter((rel) => fs.existsSync(path.join(ROOT, rel)));
+if (staticAssets.length < 2) warn('缺少 manifest.json 或 icon.svg，PWA 安装体验会受影响');
+
+const precache = ['index.html', ...staticAssets, ...listFilesUnder(APPS_DIR, 4 * 1024 * 1024)].sort();
+
+const versionHash = createHash('sha1');
+for (const rel of precache) {
+  versionHash.update(rel);
+  versionHash.update(fs.readFileSync(path.join(ROOT, rel)));
+}
+const cacheVersion = versionHash.digest('hex').slice(0, 10);
+
+const swSource = `/* 本文件由 scripts/build.mjs 自动生成，请勿手改 */
+const CACHE = 'tools-${cacheVersion}';
+const PRECACHE = ${JSON.stringify(precache, null, 2)};
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((cache) => cache.addAll(PRECACHE))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+// 同一个页面可能有 /、/index.html、/apps/x/、/apps/x/index.html 几种地址，都兜住
+function matchCached(request) {
+  return caches.match(request, { ignoreSearch: true }).then((hit) => {
+    if (hit) return hit;
+    const url = new URL(request.url);
+    if (url.pathname.endsWith('/')) return caches.match(url.pathname + 'index.html');
+    if (!/\\.[a-z0-9]+$/i.test(url.pathname)) return caches.match(url.pathname + '/index.html');
+    return undefined;
+  });
+}
+
+// 先给缓存（离线可用），同时后台拉最新版本更新缓存
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (url.origin !== location.origin) return;
+
+  event.respondWith(
+    matchCached(request).then((cached) => {
+      const network = fetch(request)
+        .then((response) => {
+          if (response && response.ok && response.type === 'basic') {
+            const copy = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => undefined);
+      if (cached) return cached;
+      return network.then((response) => response || new Response('离线中，这个页面还没有缓存过。', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      }));
+    })
+  );
+});
+`;
+
 /* ------------------------------------------------------------------ 写文件 */
 
 fs.writeFileSync(OUTPUT_HTML, html, 'utf8');
+fs.writeFileSync(OUTPUT_SW, swSource, 'utf8');
 console.log(`✔ 已生成 ${path.relative(ROOT, OUTPUT_HTML)}（${tools.length} 个工具）`);
+console.log(`✔ 已生成 ${path.relative(ROOT, OUTPUT_SW)}（缓存 ${precache.length} 个文件，版本 ${cacheVersion}）`);
 
 // dist/ 供静态托管使用（已 gitignore，部署平台构建时生成）
 fs.rmSync(DIST_DIR, { recursive: true, force: true });
 fs.mkdirSync(DIST_DIR, { recursive: true });
 fs.copyFileSync(OUTPUT_HTML, path.join(DIST_DIR, 'index.html'));
+fs.copyFileSync(OUTPUT_SW, path.join(DIST_DIR, 'sw.js'));
+for (const rel of staticAssets) fs.copyFileSync(path.join(ROOT, rel), path.join(DIST_DIR, rel));
 fs.cpSync(APPS_DIR, path.join(DIST_DIR, 'apps'), { recursive: true });
 fs.writeFileSync(path.join(DIST_DIR, '.nojekyll'), '', 'utf8');
 console.log(`✔ 已导出 dist/（可直接上传或托管的静态站点）`);
 
-for (const tool of tools) console.log(`   · ${tool.emoji} ${tool.name}  →  ${tool.url}`);
+for (const tool of tools) {
+  const when = tool.updatedAt ? `更新于 ${tool.updatedAt}（${tool.updatedFrom}）` : '无更新时间';
+  console.log(`   · ${tool.emoji} ${tool.name}  →  ${tool.url}  ${when}`);
+}
+if (isShallowRepo) {
+  console.log('\n提示：当前是浅克隆，git 历史不完整，更新时间取自 tools.json 的 updatedAt。');
+}
 if (warnings.length) console.log(`\n共 ${warnings.length} 条提醒，见上方 ⚠️ 信息。`);
