@@ -5,7 +5,7 @@
 - 无需后端、无第三方依赖，双击 `index.html` 也能打开
 - 目录页由 `tools.json` + `apps/` 自动生成，新增工具只要两步
 - 自带搜索、深色模式、手机适配
-- 代码放 GitHub（Gitee 可作国内镜像），Cloudflare Pages 自动构建发布
+- 代码放 GitHub（Gitee 可作国内镜像），Cloudflare（Pages / Workers）自动构建发布
 
 ## 目录结构
 
@@ -80,28 +80,32 @@ git push -u github main
 git push origin main && git push github main     # 一次推两个远端
 ```
 
-**2. 在 Cloudflare 里接上仓库**
+**2. 在 Cloudflare 建 Pages 项目**
 
-1. 注册 / 登录 [Cloudflare 控制台](https://dash.cloudflare.com/)（邮箱即可，不需要信用卡）。
-2. **Workers & Pages** → **Create** → **Pages** → **Connect to Git**。
-3. 授权 GitHub，选中刚建的仓库和 `main` 分支。
-4. 构建配置：
-   - 框架预设：`None`
-   - 构建命令：`node scripts/build.mjs`
-   - 输出目录：`dist`
-   - 环境变量（可选）：`NODE_VERSION=20`（仓库里也有 `.nvmrc`）
-5. **Save and Deploy**，几十秒后得到 `https://ai-generated-tools.pages.dev/`。
-6. 之后每次 `git push` 到 `main`，Cloudflare 自动重新构建发布。
+入口：**Workers & Pages** → **Create** → 选 **Pages** 标签 → **Connect to Git**，选中仓库 `ai-generated-apps` 和 `main`，只填两项：
 
-**3. 不想接 GitHub 也可以手动上传**
+| 项 | 值 |
+| --- | --- |
+| 构建命令 | `node scripts/build.mjs` |
+| 输出目录 | `dist` |
+
+**别走 "Workers" 流程**：它给的地址是 `*.workers.dev`，而这个域名在国内是被墙的（实测被解析到 `31.13.70.9` 这类假 IP，连接 20 秒超时）；`*.pages.dev` 则正常（实测 301，0.6s）。
+
+如果控制台里找不到 Pages 入口，用命令行直接建项目，绕开表单：
 
 ```bash
 npm run build
-npx wrangler login    # 浏览器授权一次
-npm run deploy        # 上传 dist 到 Pages 项目 ai-generated-tools
+npx wrangler login
+npm run deploy:pages     # 创建/更新 Pages 项目 ai-generated-apps
 ```
 
-也可以直接在控制台 **Upload assets** 里把 `dist/` 的内容拖进去。
+建好之后再去 Pages 项目的 **Settings → Builds & deployments → Connect Git** 接上 GitHub 自动部署。
+
+**3. 部署完成**
+
+地址是 `https://ai-generated-apps.pages.dev`。之后每次 `git push` 到 `main` 自动重建。
+
+> 仓库里的 `wrangler.jsonc` 是给 Workers 路线留的（Workers 需要自己的域名才能在国内访问），Pages 路线用不到，留着不影响。
 
 ### 其它方案（都在收紧，列出来方便对比）
 
