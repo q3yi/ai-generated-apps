@@ -2,8 +2,8 @@
   "site": {
     "title": "AI 小工具集",
     "subtitle": "把日常的小麻烦，做成打开就能用的页面",
-    "repoLabel": "q3yi/ai-generated",
-    "repoUrl": "https://gitee.com/q3yi/ai-generated"
+    "repoLabel": "q3yi/ai-generated-apps",
+    "repoUrl": "https://github.com/q3yi/ai-generated-apps"
   },
   "tools": [
     {

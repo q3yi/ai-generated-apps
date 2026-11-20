@@ -63,21 +63,25 @@ Gitee Pages 已于 **2024 年 5 月下线**，官方在 Gitee Feedback 里回复
 
 ### 推荐方案：GitHub + Cloudflare Pages
 
-免费、免备案、不需要自己的域名，push 后自动构建，地址是 `https://<项目名>.pages.dev`。
+免费、免备案、不需要自己的域名，push 后自动构建。
 
-**1. 把代码放到 GitHub**
+**在线地址：<https://ai-generated-apps-2ft.pages.dev/>**（项目名 `ai-generated-apps`，`-2ft` 是 Cloudflare 分配的默认子域后缀）
 
-在 GitHub 新建一个**空仓库**（不要勾选 README / .gitignore），然后：
+**1. 代码在 GitHub**
+
+仓库：<https://github.com/q3yi/ai-generated-apps>（Cloudflare 从这里构建）
 
 ```bash
-git remote add github https://github.com/<你的用户名>/ai-generated-tools.git
-git push -u github main
+git remote -v
+# origin  https://github.com/q3yi/ai-generated-apps.git   （主仓库）
+# gitee   https://gitee.com/q3yi/ai-generated.git         （国内镜像，可选）
 ```
 
-`origin` 仍然指向 Gitee，两边都保留：
+推送到主仓库，想同步 Gitee 时再推一次：
 
 ```bash
-git push origin main && git push github main     # 一次推两个远端
+git push origin main
+git push gitee main     # 可选：同步国内镜像
 ```
 
 **2. 在 Cloudflare 建 Pages 项目**
@@ -103,7 +107,9 @@ npm run deploy:pages     # 创建/更新 Pages 项目 ai-generated-apps
 
 **3. 部署完成**
 
-地址是 `https://ai-generated-apps.pages.dev`。之后每次 `git push` 到 `main` 自动重建。
+线上地址 <https://ai-generated-apps-2ft.pages.dev/>。Pages 项目名是 `ai-generated-apps`，`ai-generated-apps.pages.dev` 这个子域已被别人占用，Cloudflare 就自动加了 `-2ft` 后缀——功能没差别，想换短地址只能在 Pages 项目里改项目名或绑自定义域名。
+
+之后每次 `git push` 到 `main`，Cloudflare 自动重新构建发布（已接上 GitHub）。
 
 > 仓库里的 `wrangler.jsonc` 是给 Workers 路线留的（Workers 需要自己的域名才能在国内访问），Pages 路线用不到，留着不影响。
 
@@ -120,15 +126,15 @@ npm run deploy:pages     # 创建/更新 Pages 项目 ai-generated-apps
 
 ```bash
 git remote -v
-# origin  https://gitee.com/q3yi/ai-generated.git   （国内镜像 / 备份）
-# github  https://github.com/<你的用户名>/ai-generated-tools.git
+# origin  https://github.com/q3yi/ai-generated-apps.git   （主仓库，Cloudflare 从这里构建）
+# gitee   https://gitee.com/q3yi/ai-generated.git         （国内镜像，可选）
 ```
 
-首次推送需要认证：Gitee 用账号密码 / [私人令牌](https://gitee.com/profile/personal_access_tokens)，GitHub 用 Personal Access Token 或 SSH。SSH 方式：
+首次推送需要认证：GitHub 用 Personal Access Token、SSH 或 Git Credential Manager；Gitee 用账号密码 / [私人令牌](https://gitee.com/profile/personal_access_tokens)。SSH 方式：
 
 ```bash
-git remote set-url github git@github.com:<你的用户名>/ai-generated-tools.git
-ssh -T git@github.com    # 看到 Hi <用户名>! 说明公钥已配置
+git remote set-url origin git@github.com:q3yi/ai-generated-apps.git
+ssh -T git@github.com    # 看到 Hi q3yi! 说明公钥已配置
 ```
 
 ## 常见问题
